@@ -5,12 +5,11 @@ library(Benchmarking)
 library(readxl)
 
 menu_matematico = function() {
-  opcao = "" # Inicia a variável vazia
+  opcao = "" 
   
-  # O loop mantém o sistema rodando até o usuário digitar "0"
   while(opcao != "0") {
     
-    cat("\014") # Limpa a tela para o menu sempre aparecer no topo
+    cat("\014") 
     cat("=================================================================\n")
     cat("      A.M.P. | ASSISTENTE MATEMÁTICO APLICADO - v1.0             \n")
     cat("      Interface de Modelagem, Otimização e Inteligência          \n")
@@ -36,28 +35,23 @@ menu_matematico = function() {
     cat(" [ 0 ] ENCERRAR SESSÃO\n")
     cat("=================================================================\n")
     
-    # Captura a escolha do usuário
-    opcao = readline("\n>> Selecione o módulo desejado: ")
     
-    # --- ROTEAMENTO (O "Cérebro" do Menu) ---
+    opcao = readline(">> Selecione o módulo desejado: ")
     if (opcao == "1") {
-      # Chama a função que você já criou para PL
-      # executa_pl() 
+      executa_pl() 
       cat("\n[INFO] Carregando módulo de Programação Linear...\n")
       Sys.sleep(1.5)
       
     } else if (opcao == "2") {
-      # Chama a função de DEA que acabamos de aperfeiçoar
       executa_dea() 
       
     } else if (opcao == "3") {
-      # Chama a função de Sistemas Dinâmicos
-      # executa_sistemas_dinamicos()
+      
+      executa_sistemas_dinamicos()
       cat("\n[INFO] Carregando módulo de Sistemas Dinâmicos...\n")
       Sys.sleep(1.5)
       
     } else if (opcao %in% c("4", "5", "6")) {
-      # Trava visual para os módulos que você ainda vai desenvolver
       cat("\n[AVISO] Este módulo está em desenvolvimento para as próximas versões.\n")
       Sys.sleep(2)
       
@@ -66,46 +60,48 @@ menu_matematico = function() {
       Sys.sleep(1)
       
     } else {
-      # Se o usuário digitar algo como "A" ou "9"
       cat("\n[ERRO] Comando não reconhecido. Tente novamente.\n")
       Sys.sleep(1.5)
     }
   }
 }
 
+
+
 executa_pl = function() {
   cat("\014") 
   texto = paste(
     "================================================================\n",
-    "       SISTEMA DE APOIO À DECISÃO E OTIMIZAÇÃO DE LUCROS        \n",
+    "        SISTEMA DE APOIO À DECISÃO E OTIMIZAÇÃO DE RECURSOS     \n",
     "================================================================\n",
-    "A Programação Linear permite encontrar a combinação ideal de\n",
-    "recursos para maximizar o Retorno sobre Investimento (ROI) ou\n",
-    "minimizar custos operacionais sob restrições severas.\n\n",
-    "Aplicações Práticas:\n",
-    "1. MIX DE PRODUÇÃO: O que fabricar para ganhar mais com menos.\n",
-    "2. LOGÍSTICA: Redução de custos de frete e armazenagem.\n",
-    "3. ESCALONAMENTO: Distribuição eficiente de turnos e máquinas.\n",
+    "Este módulo utiliza a Programação Linear para encontrar a melhor\n",
+    "decisão possível (Matematicamente Ótima) para o seu negócio,\n",
+    "respeitando as restrições físicas e financeiras da realidade.\n\n",
+    "Conceitos Aplicados:\n",
+    "1. Função Objetivo: A meta financeira (Maximizar ou Minimizar).\n",
+    "2. Variáveis de Decisão: O que podemos controlar (ex: quanto produzir).\n",
+    "3. Restrições: Nossos limites (ex: horas, orçamento, estoque).\n",
     "================================================================\n"
   )
   
   cat(texto)
-  readline("Pressione [ENTER] para iniciar a análise de viabilidade...")
+  readline("Pressione [ENTER] para configurar o modelo de otimização...")
   
   cat("\014") 
   cat("\n================================================================")
-  cat("\n>>> CONFIGURAÇÃO DO MODELO DE NEGÓCIO <<<\n")
+  cat("\n>>> DEFINIÇÃO DA META ESTRATÉGICA <<<\n")
   cat("----------------------------------------------------------------\n")
-  cat("Qual é o objetivo estratégico principal?\n")
-  cat(" 1. MAXIMIZAÇÃO (Ex: Lucro Total, Volume de Vendas, Eficiência)\n")
-  cat(" 2. MINIMIZAÇÃO (Ex: Custo de Matéria-Prima, Horas Extras, Risco)\n")
+  cat("Qual é o objetivo principal do cálculo?\n")
+  cat(" 1. MAXIMIZAÇÃO (Ex: Maior Lucro, Receita ou Produtividade)\n")
+  cat(" 2. MINIMIZAÇÃO (Ex: Menor Custo, Tempo ou Desperdício)\n")
   cat("----------------------------------------------------------------\n")
   
-  escolha = as.integer(readline("Selecione a meta (1 ou 2): "))
+  escolha = as.integer(readline("Selecione a direção (1 ou 2): "))
   direcao = ifelse(escolha == 1, "max", "min")
   
   if (!(escolha %in% c(1, 2))) {
-    cat("\nOperação cancelada. Seleção inválida.")
+    cat("\n[ERRO] Operação cancelada. Seleção inválida.")
+    Sys.sleep(1.5)
     return()
   }
   
@@ -116,67 +112,73 @@ executa_pl = function() {
     return(as.numeric(vetor))
   }
   
-  cat(paste("\n--- DEFINIÇÃO DOS PARÂMETROS DE", toupper(direcao), "---\n"))
+  cat("\014") 
+  cat("================================================================")
+  cat(paste("\n>>> ENTRADA DE DADOS: MODELO DE", toupper(direcao), "<<<\n"))
+  cat("================================================================\n")
   
-  # 1. Vetor C (Lucratividade ou Custo Unitário)
-  f.obj = ler_input("[1] MARGENS UNITÁRIAS: (Lucro ou Custo por unidade de X1, X2...): ")
+  # 1. Função Objetivo
+  cat("[1] FUNÇÃO OBJETIVO (Vetor C):\n")
+  f.obj = ler_input("Qual o Lucro ou Custo de cada item? (ex: 50, 120): ")
   
   # 2. Sinais das Restrições
-  cat("\n[2] DIRETRIZES DE LIMITAÇÃO: (Use '<=' para teto ou '>=' para meta mínima)\n")
+  cat("\n[2] DIREÇÃO DOS LIMITES:\n")
+  cat("Use '<=' para teto máximo ou '>=' para meta mínima.\n")
   dir_str = readline("Sinais separados por espaço (ex: <= <=): ")
   f.dir = unlist(strsplit(dir_str, "[ ,]+"))
   
-  # 3. Vetor B (Disponibilidade de Recursos)
-  f.rhs = ler_input("\n[3] CAPACIDADE TOTAL: (Horas disponíveis, Orçamento, Estoque): ")
+  # 3. Disponibilidade
+  cat("\n[3] DISPONIBILIDADE TOTAL (Termos Independentes / RHS):\n")
+  f.rhs = ler_input("Qual o limite total de cada recurso? (ex: 40h, 1000 reais): ")
   
-  # 4. Matriz A (Consumo Técnico)
-  cat("\n[4] MATRIZ DE CONSUMO TÉCNICO: (Quanto cada produto gasta de cada recurso)\n")
-  mat_vec = ler_input("Valores da Matriz (linha por linha): ")
+  # 4. Matriz Técnica
+  cat("\n[4] CONSUMO DE RECURSOS (Matriz de Coeficientes):\n")
+  cat("Quanto cada item consome de cada recurso?\n")
+  mat_vec = ler_input("Digite todos os valores, linha por linha: ")
   
   f.con = matrix(mat_vec, nrow = length(f.dir), ncol = length(f.obj), byrow = TRUE)
   
-  # --- SOLVER ---
-  cat("\n[SISTEMA] Processando cenários e buscando solução ótima...\n")
+  cat("\n[SISTEMA] Algoritmo Simplex em execução... Calculando cenário ideal.\n")
+  Sys.sleep(1.5)
   
   solucao = lp(direction = direcao, 
                objective.in = f.obj, 
                const.mat = f.con, 
                const.dir = f.dir, 
                const.rhs = f.rhs,
-               compute.sens = TRUE) # Ativa análise de sensibilidade
+               compute.sens = TRUE)
   
-  # --- RELATÓRIO EXECUTIVO ---
-  cat("\n================================================================\n")
+  cat("\014") 
+  cat("================================================================\n")
   if (solucao$status == 0) {
     cat(">>> RELATÓRIO DE OTIMIZAÇÃO CONCLUÍDO <<<\n")
     cat("----------------------------------------------------------------\n")
-    cat("RESULTADO FINAL ESPERADO (Z*):", format(solucao$objval, nsmall=2), "\n\n")
+    cat("RESULTADO FINANCEIRO ÓTIMO (Z*):", format(solucao$objval, nsmall=2), "\n\n")
     
-    cat("PLANO DE AÇÃO RECOMENDADO:\n")
+    cat("PLANO DE AÇÃO IDEAL (Solução):\n")
     for(i in 1:length(solucao$solution)) {
       cat(paste("  -> Produzir/Alocar item X", i, ": ", round(solucao$solution[i], 2), " unidades\n", sep=""))
     }
     
-    cat("\nANÁLISE DE GARGALOS (Shadow Prices):\n")
-    # O Shadow Price diz quanto o lucro subiria se aumentássemos 1 unidade do recurso
+    cat("\nANÁLISE DE GARGALOS (Preços-Sombra):\n")
     precos_sombra = solucao$duals[1:length(f.rhs)]
     for(i in 1:length(precos_sombra)) {
       if(precos_sombra[i] > 0) {
-        cat(paste("  ! Alerta: Recurso ", i, " é um GARGALO. (+1 unidade = +", 
-                  round(precos_sombra[i], 2), " no lucro)\n", sep=""))
+        cat(paste("  ! Dica: O Recurso ", i, " está esgotado. (+1 unidade gera +", 
+                  round(precos_sombra[i], 2), " no resultado final)\n", sep=""))
       }
     }
   } else {
-    cat(">>> ERRO: CENÁRIO INVIÁVEL <<<\n")
-    cat("As metas desejadas ultrapassam a capacidade física dos recursos.\n")
+    cat(">>> ERRO: CENÁRIO MATEMATICAMENTE INVIÁVEL <<<\n")
+    cat("As restrições fornecidas entram em conflito e não possuem solução.\n")
   }
   cat("================================================================\n")
   
-  readline("\nPressione [ENTER] para retornar ao centro de comando.")
+  readline("\nPressione [ENTER] para retornar ao menu principal.")
 }
 
 executa_sistemas_dinamicos = function() {
-  cat("\014") # Limpa a tela antes de mostrar a teoria
+  cat("\014") 
   texto = paste(
     "================================================================\n",
     "Sistemas Dinâmicos estudam como estados evoluem sob regras\n",
@@ -193,13 +195,11 @@ executa_sistemas_dinamicos = function() {
   
   cat(texto)
   
-  # PAUSA PARA LEITURA
   readline("Pressione [ENTER] para configurar os modelos...")
   
-  cat("\014") # Limpa a tela AGORA para o sub-menu aparecer sozinho
+  cat("\014") 
   cat("\n================================================================")
   cat("\n>>> MÓDULO DE SISTEMAS DINÂMICOS <<<\n")
-  # ... resto do seu código ...
   cat("Escolha o modelo matemático para simular:\n")
   cat(" 1. Financeiro (Ma-Chen - Caos e Estabilidade Econômica)\n")
   cat(" 2. Engenharia (Pêndulo Não-Linear com Atrito)\n")
@@ -208,7 +208,6 @@ executa_sistemas_dinamicos = function() {
   
   modelo = as.integer(readline("Digite o número do modelo: "))
   
-  # Variável de tempo padrão para todos os modelos
   tempos = seq(0, 50, by = 0.05) 
   
   if (modelo == 1) {
@@ -238,7 +237,6 @@ executa_sistemas_dinamicos = function() {
     
   } else if (modelo == 2) {
     cat("\n--- MODELO DE ENGENHARIA (PÊNDULO NÃO-LINEAR) ---\n")
-    # theta = ângulo, omega = velocidade angular
     theta_val = as.numeric(readline("Ângulo inicial (em radianos, ex: 3.14): ")) 
     omega_val = as.numeric(readline("Velocidade angular inicial: "))
     
@@ -280,7 +278,7 @@ executa_sistemas_dinamicos = function() {
     
   } else {
     cat("\nOpção inválida! Voltando ao menu principal...\n")
-    return() # Interrompe a função e volta pro menu de fora
+    return() 
   }
   
 
@@ -291,9 +289,6 @@ executa_sistemas_dinamicos = function() {
   
   # 1. Gráfico Automático de Evolução Temporal (Todas as variáveis vs Tempo)
   plot(saida, main = "Evolução Temporal do Sistema")
-  
-  # 2. Gráfico de Espaço de Fase (Variável 1 vs Variável 2)
-  # O R pega dinamicamente o nome das colunas 2 e 3 do Data Frame
   var1_nome = names(df_saida)[2]
   var2_nome = names(df_saida)[3]
   
@@ -302,6 +297,7 @@ executa_sistemas_dinamicos = function() {
   
   cat("\n[SUCESSO] Gráficos gerados com sucesso!\n")
 }
+
 
 executa_dea = function() {
   # --- TELA 1: INTRODUÇÃO ---
@@ -352,7 +348,7 @@ executa_dea = function() {
     
     nome_excel = readline("Nome do Arquivo: ")
     
-    if (!grepl("\.xlsx$", nome_excel)) {
+    if (!grepl("\\.xlsx$", nome_excel)) {
       nome_excel = paste0(nome_excel, ".xlsx")
     }
     
@@ -372,10 +368,10 @@ executa_dea = function() {
   
   
   cat("\n[SUCESSO] Planilha carregada!\n")
-  Sys.sleep(1) # Efeito visual de carregamento
+  Sys.sleep(1)
   
   # --- TELA 3: MAPEAMENTO - PASSO 1 ---
-  cat("\014") # Limpa a tela
+  cat("\014") 
   cat("================================================================\n")
   cat(">>> ETAPA 1/3: IDENTIFICAÇÃO DAS UNIDADES (DMUs) <<<\n")
   cat("----------------------------------------------------------------\n")
@@ -383,7 +379,7 @@ executa_dea = function() {
   dmu_nomes = dados_excel[[defina_dmu]]
   
   # --- TELA 4: MAPEAMENTO - PASSO 2 ---
-  cat("\014") # Limpa a tela
+  cat("\014") 
   cat("================================================================\n")
   cat(">>> ETAPA 2/3: MAPEAMENTO DE RECURSOS (INPUTS) <<<\n")
   cat("----------------------------------------------------------------\n")
@@ -393,7 +389,7 @@ executa_dea = function() {
   X = as.matrix(dados_excel[, input_nomes])
   
   # --- TELA 5: MAPEAMENTO - PASSO 3 ---
-  cat("\014") # Limpa a tela
+  cat("\014") 
   cat("================================================================\n")
   cat(">>> ETAPA 3/3: MAPEAMENTO DE RESULTADOS (OUTPUTS) <<<\n")
   cat("----------------------------------------------------------------\n")
@@ -402,10 +398,10 @@ executa_dea = function() {
   Y = as.matrix(dados_excel[, output_nomes])
   
   cat("\n[INFO] Matrizes de eficiência construídas com sucesso!\n")
-  Sys.sleep(1.5) # Efeito visual antes de pular para a teoria
+  Sys.sleep(1.5) 
   
   # --- TELA 6: TEORIA DE ESCALA ---
-  cat("\014") # Limpa a tela
+  cat("\014") 
   texto = paste(
     "================================================================\n",
     "       MODELAGEM DE FRONTEIRAS: CRS vs VRS (ESCALA)             \n",
@@ -462,3 +458,6 @@ executa_dea = function() {
   
   readline("\nPressione [ENTER] para concluir a consultoria e voltar ao menu inicial.")
 }
+
+
+menu_matematico()
